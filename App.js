@@ -1,12 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function App() {
+  let [selectedImage, setSelectedImage] = React.useState(null);
+
+  let openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+
+    setSelectedImage({ localUri: pickerResult.uri });
+  };
+
+  if (selectedImage !== null) {
+    return (
+      <View style={styles.container}>
+        <Image source={{ uri: selectedImage.localUri }} style={styles.thumbnail}/>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+
+      <TouchableOpacity onPress={openImagePickerAsync} style={styles.button}>
+        <Text style={styles.buttonText}>Select image</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -14,8 +42,17 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'silver',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: 'white',
+    padding: 10,
+  },
+  thumbnail: {
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
   },
 });
