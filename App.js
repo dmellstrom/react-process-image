@@ -13,12 +13,16 @@ export default function App() {
       return;
     }
 
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({base64: true});
     if (pickerResult.cancelled === true) {
       return;
     }
 
-    setSelectedImage({ localUri: pickerResult.uri });
+    if (pickerResult.base64) {
+      setSelectedImage({ localUri: 'data:image/jpeg;base64,' + pickerResult.base64 });
+    } else {
+      setSelectedImage({ localUri: pickerResult.uri }); // Workaround for web for expo/expo#9984
+    }
   };
 
   if (selectedImage !== null) {
