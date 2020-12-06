@@ -1,0 +1,12 @@
+{
+  "name": "react-process-image",
+  "displayName": "react-process-image",
+  "expo": {
+    "name": "react-process-image",
+    "slug": "react-process-image",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
