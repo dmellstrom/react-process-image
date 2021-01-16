@@ -3,10 +3,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Surface } from 'gl-react-expo';
 import ImageFilters from 'react-native-gl-image-filters';
+import * as MediaLibrary from 'expo-media-library';
 
 export default function App() {
   let [selectedImage, setSelectedImage] = React.useState(null);
   let [selectedFilter, setSelectedFilter] = React.useState(null);
+  let [savedImageUri, setSavedImageUri] = React.useState(null);
 
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -26,6 +28,13 @@ export default function App() {
 
   let processImage = () => {
     setSelectedFilter('vintage');
+  };
+
+  let saveImage = async () => {
+    if (!this.image) return;
+    const result = await this.image.glView.capture();
+    const asset = await MediaLibrary.createAssetAsync(result.uri);
+    setSavedImageUri(asset.uri);
   };
 
   if (selectedImage !== null) {
@@ -49,6 +58,10 @@ export default function App() {
               {{ uri: selectedImage.localUri.replace(/^file:\/+/, 'file:///') }}
             </ImageFilters>
           </Surface>
+          <TouchableOpacity onPress={saveImage} style={styles.button}>
+            <Text style={styles.buttonText}>Save image</Text>
+          </TouchableOpacity>
+          <Text>{ savedImageUri }</Text>
         </View>
       );  
     }
